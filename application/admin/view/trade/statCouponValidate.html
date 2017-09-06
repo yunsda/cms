@@ -1,0 +1,231 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>验证统计</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">开始日期
+										</button>
+									</div>
+									<input type="text" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="beginTime">
+								</div>
+							</div>
+							
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">结束日期
+										</button>
+									</div>
+									<input type="text" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="beginTime">
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId" placeholder="活动号" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">门店号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId" placeholder="门店号" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">终端号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId" placeholder="终端号" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">商品号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId" placeholder="商品号" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<button type="button" class="btn btn-primary "
+									onclick="Bill.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+							</div>
+						</div>
+
+
+						<div class="hidden-xs" id="BillTableToolbar" role="group">
+
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="Bill.listCoupon()" id="">
+								<i class="fa fa-plus"></i>&nbsp;查看卡券
+							</button>
+						</div>
+						<table id="BillTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	/**
+	 * 日志管理初始化
+	 */
+	var Bill = {
+		id : "BillTable", //表格id
+		seItem : null, //选中的条目
+		table : null,
+		layerIndex : -1
+	};
+
+	/**
+	 * 初始化表格的列
+	  'activity_id' => doOrderSn() . rand(100, 999),
+      'activity_name' => rand(0,1) ? '端午节良品铺子优惠券' : '迎建军节特价优惠券',
+      'times' => rand(0, 30),
+      'amount' => rand(100, 1000),
+      'cancel_times' => 0,
+      'cancel_amount' => 0,
+	 */
+	Bill.initColumn = function() {
+		return [ {
+			field : 'selectItem',
+			radio : true
+		},  {
+			title : '活动号',
+			field : 'activity_id',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '活动简称',
+			field : 'activity_name',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '验证笔数',
+			field : 'times',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '验证金额',
+			field : 'amount',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '撤销笔数',
+			field : 'cancel_times',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '撤销金额',
+			field : 'cancel_amount',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		} ];
+	};
+
+	/**
+	 * 检查是否选中
+	 */
+	Bill.check = function() {
+		var selected = $('#' + this.id).bootstrapTable('getSelections');
+		if (selected.length == 0) {
+			Feng.info("请先选中表格中的某一记录！");
+			return false;
+		} else {
+			Bill.seItem = selected[0];
+			return true;
+		}
+	};
+
+	/**
+	 * 作废券码
+	 */
+	Bill.listCoupon = function() {
+		if (this.check()) {
+			var index = layer.open({
+				type : 2,
+				title : '卡券列表-' + Bill.seItem.id,
+				area : [ '1200px', '800px' ], //宽高
+				fix : false, //不固定
+				maxmin : true,
+				content : Feng.ctxPath + '/admin/Coupon/index/?billId='
+						+ this.seItem.id
+			});
+			this.layerIndex = index;
+		}
+	};
+
+	/**
+	 * 查询表单提交参数对象
+	 * @returns {{}}
+	 */
+	Bill.formParams = function() {
+		var queryData = {};
+		queryData['couponIds'] = $("#couponIds").val();
+		return queryData;
+	}
+
+	/**
+	 * 查询日志列表
+	 */
+	Bill.search = function() {
+		Bill.table.refresh({
+			query : Bill.formParams()
+		});
+	};
+
+	$(function() {
+		var defaultColunms = Bill.initColumn();
+		var table = new BSTable(Bill.id, "/admin/Trade/statCouponValidateData",
+				defaultColunms);
+		table.setPaginationType("server");
+		table.setQueryParams(Bill.formParams());
+		Bill.table = table.init();
+	});
+</script>
+
+{/block}

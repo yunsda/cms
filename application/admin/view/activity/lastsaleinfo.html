@@ -1,0 +1,95 @@
+{extend name='common/_container'} 
+{block name="content"}
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>{$title}</h5>
+			</div>
+			
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<table id="TerminalTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+/**
+ * 终端管理初始化
+ */
+var Terminal = {
+    id: "TerminalTable",	//表格id
+    seItem: null,		//选中的条目
+    table: null,
+    layerIndex: -1
+};
+
+/**
+ * 初始化表格的列
+ */
+Terminal.initColumn = function () {
+    return [
+        {field: 'selectItem', radio: true},
+        {title: '终端id', field: 'id', align: 'center', valign: 'middle',width:'210px'},
+        {title: '终端名', field: 'name', align: 'center', valign: 'middle', sortable: true},
+        {title: '终端号', field: 'terminal', align: 'center', valign: 'middle', sortable: true},
+        {title: '状态', field: 'status', align: 'center', valign: 'middle', sortable: true, formatter:Terminal.statusFormatter}
+    ];
+};
+
+//格式化状态
+Terminal.statusFormatter = function(value, row, index) {
+	switch (row.status) {
+	case '1':
+		return '<span class="label label-primary">正常 </span>';
+		break;
+	case '0':
+		return '<span class="label label-danger">禁用</span>';
+		break;
+	default:
+		return '<span class="label label-info">' + row.status + '</span>';
+		break;
+	}
+}
+
+/**
+ * 检查是否选中
+ */
+Terminal.check = function () {
+    var selected = $('#' + this.id).bootstrapTreeTable('getSelections');
+    if(selected.length == 0){
+        Feng.info("请先选中表格中的某一记录！");
+        return false;
+    }else{
+        Terminal.seItem = selected[0];
+        return true;
+    }
+};
+
+$(function () {
+    var defaultColunms = Terminal.initColumn();
+    var table = new BSTreeTable(Terminal.id, "/admin/Activity/listLastSaleDetailData/idx/{$idx}", defaultColunms);
+    table.setExpandColumn(2);
+    table.setIdField("id");
+    table.setCodeField("id");
+    table.setParentCodeField("parentSaleId");
+    table.setExpandAll(true);
+    table.init();
+    Terminal.table = table;
+});
+
+</script>
+{/block}

@@ -1,0 +1,52 @@
+{extend name='common/_container'} 
+{block name="content"}
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal">
+		<form action="{:url('admin/Bill/importPhone')}" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="billId" value="{$billId}">
+			<div class="row">
+				<div class="col-sm-6 b-r">
+					{input type="file" id="file_name" name="Excel文件" underline="true"/}
+					{input type="text" id="send_num" name="发送数量" value="1" underline="true"/}
+					<p style="margin-top: -21px; color: red;">
+					注：1.请下载模板，在模板中进行添加手机号，以免出现错误；<br />
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					2.导入手机号数量会根据制卡单下剩余卡券数量进行发送分配；
+					</p>
+				</div>
+			</div>
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<a href="{:url('admin/Bill/exportTemplate')}" class="btn btn-info" style="margin-right:10px;"><i class="fa fa-download"></i>&nbsp;下载模板</a>
+					<button type="submit" class="btn btn-info" id="ensure" style="margin-right:10px;">
+					    <i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger" onclick="ImportDlg.close()" id="cancel">
+					    <i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var ImportDlg = {
+	    deptZtree: null,
+	    pNameZtree: null
+	};
+
+	// $('#ensure').click(function() {
+	// 	$(this).attr('disabled', 'disabled');
+	// });
+
+	/**
+	 * 关闭此对话框
+	 */
+	ImportDlg.close = function () {
+		var index = parent.layer.getFrameIndex(window.name);
+	    parent.layer.close(index);
+	};
+</script>
+{/block}

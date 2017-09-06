@@ -1,0 +1,44 @@
+{extend name='common/_container'} {block name="content"}
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal" id="activityInfoForm">
+
+            <input type="hidden" id="id" value="{$id}">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class='form-group'>
+					<label class='col-sm-4 control-label'>活动延期至</label>
+                    <div class='col-sm-8'>					
+                     <input type="text" value="" style="width:250px;" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="laterTime">
+					</div>
+					</div>
+					
+                </div>
+                 
+            </div>
+
+            <!-- 父级部门的选择框 -->
+            <div id="parentDeptMenu" class="menuContent"
+                 style="display: none; position: absolute; z-index: 200;">
+                <ul id="parentDeptMenuTree" class="ztree tree-box" style="width: 245px !important;"></ul>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <button type="button" class="btn btn-info " onclick="activityInfoDlg.laterSubmit()" id="ensure">
+    <i class="fa fa-check"></i>&nbsp;提交
+</button>
+<button type="button" class="btn btn-danger " onclick="activityInfoDlg.close()" id="cancel">
+    <i class="fa fa-eraser"></i>&nbsp;取消
+</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/admin/activity/activity_info.js"></script>
+{/block}

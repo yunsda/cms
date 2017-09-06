@@ -1,0 +1,110 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>业务日志</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">开始时间
+										</button>
+									</div>
+									<input type="text" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="beginTime">
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">结束时间
+										</button>
+									</div>
+									<input type="text" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="endTime">
+								</div>
+							</div>
+
+
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">用户名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="username"
+										placeholder="" />
+								</div>
+							</div>
+
+
+							<div class="col-xs-3">
+								<div class="form-group">
+									<select name='action' id="action" class='input-sm form-control'>
+										<option value=''> - 行为 - </option>
+										<!--{foreach $actions as $action}-->
+										<!--{if $action===$Think.get.action}-->
+										<option selected="selected" value='{$action}'>{$action}</option>
+										<!--{else}-->
+										<option value='{$action}'>{$action}</option>
+										<!--{/if}-->
+										<!--{/foreach}-->
+									</select>
+								</div>
+							</div>
+
+							<div class="col-xs-3">
+								<div class="form-group">
+									<input type="text" name="content"
+										value="{$Think.get.content|default=''}" placeholder="操作内容"
+										class="input-sm form-control">
+								</div>
+							</div>
+
+
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary "
+									onclick="OptLog.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+							</div>
+						</div>
+						<div class="hidden-xs" id="OptLogTableToolbar" role="group">
+							<button type="button" class="btn btn-primary "
+								onclick="OptLog.detail()" id="">
+								<i class="fa fa-plus"></i>&nbsp;查看详情
+							</button>
+							{if auth("$classuri/del")}
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="OptLog.delLog()" id="">
+								<i class="fa fa-plus"></i>&nbsp;清空日志
+							</button>
+							{/if}
+						</div>
+						<table id="OptLogTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="__PUBLIC__/static/js/admin/log/log.js"></script>
+
+{/block}

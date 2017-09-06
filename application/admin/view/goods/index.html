@@ -1,0 +1,419 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>电子券商品列表</h5>
+			</div>
+			
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">下级机构
+										</button>
+									</div>
+									<select class="form-control" id="organId">
+									  <option value="">请选择下属机构</option>
+									  {volist name="list" id="vo"}
+										<option value="{$vo.id}">{$vo.cname}</option>
+									  {/volist}								
+									</select>
+								</div>
+							</div>
+							
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityName"
+										placeholder="活动名称" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动编号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId"
+										placeholder="活动编号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">商品名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="GoodsName"
+										placeholder="商品名称" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">商品编号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="goodsId"
+										placeholder="商品编号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-1">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">面额
+										</button>
+									</div>
+									<input type="text" class="form-control" id="money"
+										placeholder="面额" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">
+											商品状态</button>
+									</div>
+									<select class="form-control" id="status">
+										<option value="">全部</option>
+										<option value="0">停售</option>
+										<option value="1">正常</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custName"
+										placeholder="客户名称" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custNote"
+										placeholder="客户备注" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">创建开始时间
+										</button>
+									</div>
+									<input type="text" placeholder="创建开始时间" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="startTime">
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">创建结束时间
+										</button>
+									</div>
+									<input type="text" placeholder="创建结束时间" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="endTime">
+								</div>
+							</div>
+
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary " onclick="CodeGoods.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+								
+							</div>
+						</div>
+						
+						<div class="hidden-xs" id="CodeGoodsTableToolbar" role="group">
+							
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.edit()" id="">
+							    <i class="fa fa-edit"></i>&nbsp;编辑
+							</button>						
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.buildCode()" id="">
+							    <i class="fa fa-plus"></i>&nbsp;制券
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.laterGoods()" id="">
+							    <i class="fa fa-edit"></i>&nbsp;商品延期
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.delay()" id="">
+							    <i class="fa fa-edit"></i>&nbsp;卡券延期
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.setStatus(0)" id="">
+							    <i class="fa fa-edit"></i>&nbsp;停用
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="CodeGoods.setStatus(1)" id="">
+							    <i class="fa fa-edit"></i>&nbsp;启用
+							</button>
+
+						</div>
+						<table id="CodeGoodsTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	/**
+	 * 日志管理初始化
+	 */
+	var CodeGoods = {
+	    id: "CodeGoodsTable",	//表格id
+	    seItem: null,		//选中的条目
+	    table: null,
+	    layerIndex: -1
+	};
+	
+	/**
+	 * 初始化表格的列
+	 */
+	CodeGoods.initColumn = function () {
+	    return [
+	        {field: 'selectItem', radio: true},
+	        {title: '商品编号', field: 'id', align: 'center', valign: 'middle'},
+			{title: '商品名称', field: 'name', align: 'center', valign: 'middle', sortable: false},
+			{title: '客户名称', field: 'custName', visible: true, align: 'center', valign: 'middle'},
+	        {title: '所属活动', field: 'activityName', visible: true, align: 'center', valign: 'middle'},			
+			{title: '商品备注', field: 'note', align: 'center', valign: 'middle', sortable: false},
+			{title: '面额', field: 'money', align: 'center', valign: 'middle', sortable: false},
+			{title: '开始时间', field: 'startTime', align: 'center', valign: 'middle', sortable: false},
+			{title: '结束时间', field: 'endTime', align: 'center', valign: 'middle', sortable: false},
+			{title: '状态', field: 'statusName', align: 'center', visible: true, valign: 'middle', sortable: false, formatter: 'CodeGoods.statusFormatter'},
+			{title: '创建时间', field: 'createTime', align: 'center', valign: 'middle', sortable: false}
+			];
+	};
+	
+	/**
+	 * 检查是否选中
+	 */
+	CodeGoods.check = function () {
+	    var selected = $('#' + this.id).bootstrapTable('getSelections');
+	    if(selected.length == 0){
+	        Feng.info("请先选中表格中的某一记录！");
+	        return false;
+	    }else{
+	        CodeGoods.seItem = selected[0];
+	        return true;
+	    }
+	};
+	
+	// 格式化状态
+	CodeGoods.statusFormatter = function(value, row, index) {
+		switch (value) {
+		case '草稿':
+			return '<span class="label label-info">' + value + '</span>';
+			break;
+		case '待审核':
+			return '<span class="label label-warning-light">' + value + '</span>';
+			break;
+		case '正常':
+			return '<span class="label label-primary">' + value + '</span>';
+			break;
+		case '停售':
+			return '<span class="label label-warning">' + value + '</span>';
+			break;
+		default:
+			return '<span class="label label-primary">' + value + '</span>';
+			break;
+		}
+	}
+
+	/**
+	 * 制卡
+	 */
+	CodeGoods.buildCode = function() {
+		if (this.check()) {
+			//非草稿状态不能编辑修改
+			if ('1' != this.seItem.status) {
+				Feng.info("只有正常状态的商品才能制券哦！");
+				return;
+			}
+
+			var index = layer.open({
+				type : 2,
+				title : '制卡',
+				area : [ '800px', '420px' ], //宽高
+				fix : false, //不固定
+				maxmin : true,
+				content : Feng.ctxPath + '/admin/Coupon/add/?goods_id='
+						+ this.seItem.id
+			});
+			this.layerIndex = index;
+		}
+	};
+
+	/**
+	 * 编辑
+	 */
+	CodeGoods.edit = function() {
+		if (this.check()) {
+			//非草稿状态不能编辑修改
+			
+
+			var index = layer.open({
+				type : 2,
+				title : '编辑商品',
+				area : [ '800px', '450px' ], //宽高
+				fix : false, //不固定
+				maxmin : true,
+				content : Feng.ctxPath + '/admin/goods/edit/?id='
+						+ this.seItem.id
+			});
+			this.layerIndex = index;
+		}
+	};
+	
+/**
+ * 商品延期
+ */
+CodeGoods.laterGoods = function () {
+  if (this.check()) {
+	var index = layer.open({
+        type: 2,
+        title: '商品延期',
+        area: ['800px', '350px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/Goods/laterGoods/?goods_id=' + this.seItem.id+'&activityId=' + this.seItem.activityId
+    });
+    this.layerIndex = index;
+  }
+};
+
+/**
+ * 卡券延期
+ */
+CodeGoods.delay = function () {
+  if (this.check()) {
+	var index = layer.open({
+        type: 2,
+        title: '卡券延期',
+        area: ['800px', '350px'], //宽高
+        fix: false, //不固定
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/Coupon/couponDelay/?goods_id=' + this.seItem.id
+    });
+    this.layerIndex = index;
+  }
+};
+
+    /**
+	修改商品状态
+	**/
+	CodeGoods.setStatus = function(flag) {
+		if (this.check()) {
+		    var tip = flag ? '启用' : '停用';
+		    var goodsId = this.seItem.id;
+		    var operation = function() {			 
+				var ajax = new $ax(Feng.ctxPath + "/admin/Goods/setStatus", function(data){
+					if (1 === parseInt(data.code)) {
+						Feng.success("操作成功！" );
+						CodeGoods.table.refresh();
+					} else {
+						Feng.error("操作失败！" + data.msg + "！");
+					}
+				},function(data){
+					Feng.error("添加失败!" + data.responseJSON.message + "!");
+				});
+				ajax.set('goodsId',goodsId);
+				ajax.set('status',flag);
+				ajax.start();
+			};
+			Feng.confirm("是否"+tip+"该商品 ？", operation);
+			
+		}
+	};
+
+	/**
+	 * 查询表单提交参数对象
+	 * @returns {{}}
+	 */
+	CodeGoods.formParams = function() {
+		var queryData = {};
+		queryData['activityName'] = $("#activityName").val();
+		queryData['activityId'] = $("#activityId").val();
+		queryData['goodsId'] = $("#goodsId").val();
+		queryData['GoodsName'] = $("#GoodsName").val();
+		queryData['money'] = $("#money").val();
+		queryData['status'] = $("#status").val();
+		queryData['custName'] = $("#custName").val();
+		queryData['custNote'] = $("#custNote").val();
+		queryData['organId'] = $("#organId").val();
+		queryData['type'] = 'search';
+		return queryData;
+	}
+
+	/**
+	 * 查询列表
+	 */
+
+	CodeGoods.search = function() {
+		CodeGoods.table.refresh({
+			query : CodeGoods.formParams()
+		});
+	};
+
+	/**
+	 * 查询导出
+	 */
+	CodeGoods.dump = function() {
+		Feng.confirm("是否确定导出选定条件商品记录?", function() {
+			var index = layer.msg('正在导出下载，请耐心等待...', {time:3600000});
+			window.location.href = "/admin/Goods/dumpData?"
+					+ Feng.parseParam(CodeGoods.formParams());
+			setTimeout(function(){layer.close(index)}, 3000);
+		});
+	};
+
+	$(function() {
+		var defaultColunms = CodeGoods.initColumn();
+		var table = new BSTable(CodeGoods.id, "/admin/Goods/listData",
+				defaultColunms);
+		table.setPaginationType("server");
+		table.setQueryParams(CodeGoods.formParams());
+		CodeGoods.table = table.init();
+	});
+</script>
+
+{/block}

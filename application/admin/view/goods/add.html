@@ -1,0 +1,60 @@
+{extend name='common/_container'} 
+{block name="content"}
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="goodsInfoForm">
+			<input type="hidden" id="activity_id" value="{$activity_id}">
+			<div class="row">
+				<div class="col-sm-6 b-r"> 
+				     <div class='form-group'>
+            <label class='col-sm-3 control-label'>活动名称</label>
+            <div class='col-sm-9'>
+            <input class='form-control' id='' name='' readonly value='{$activityName}' type="text"></div> </div><div class="hr-line-dashed"></div>
+
+					{input id="name" name="商品名称" underline="true"/}
+					{input id="money" name="券面额" underline="true" /}
+					{input id="note" name="商品备注" underline="true" /}
+				</div>
+				<div class="col-sm-6">
+				{input id="negPrice" name="协议价" underline="true"/}
+					<div class='form-group'>
+					<label class='col-sm-3 control-label'>开始时间</label>
+                    <div class='col-sm-9'>					
+                     <input type="text" style="width:250px;" value="{$startTime}" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="startTime">
+					</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+
+					
+					<div class='form-group'>
+					<label class='col-sm-3 control-label'>结束时间</label>
+                    <div class='col-sm-9'>					
+                     <input type="text" style="width:250px;" value="{$endTime}" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="endTime">
+					</div>
+					</div>
+					<div class="hr-line-dashed"></div>
+					
+				</div>
+			</div>
+			
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<button type="button" class="btn btn-info " onclick="GoodsInfoDlg.addSubmit()" id="ensure">
+					    <i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="GoodsInfoDlg.close()" id="cancel">
+					    <i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="__PUBLIC__/static/js/admin/goods/goods_info.js"></script>
+
+{/block}

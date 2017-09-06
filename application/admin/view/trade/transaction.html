@@ -1,0 +1,352 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>验证明细-<font color="#FF0000">请选择条件搜索</font></h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">下级机构
+										</button>
+									</div>
+									<select class="form-control" id="organId">
+									  <option value="">=请选择下属机构=</option>
+									  {volist name="list" id="vo"}
+										<option value="{$vo.id}">{$vo.cname}</option>
+									  {/volist}								
+									</select>
+								</div>
+							</div>
+						    
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">开始时间
+										</button>
+									</div>
+									<input type="text" placeholder="开始时间" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="startTime">
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">结束时间
+										</button>
+									</div>
+									<input type="text" placeholder="结束时间" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="endTime">
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">券号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="coupons" value="" placeholder="券号" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityName" value="" placeholder="活动名称" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动编号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId"
+										placeholder="活动编号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">商品名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="goodsName" value="" placeholder="商品名称" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">商品编号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="goodsId"
+										placeholder="商品编号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">制卡单据号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="billId" value="" placeholder="制卡单据号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">制卡单据备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="note" value="" placeholder="制卡单据号" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custName"
+										placeholder="客户名称" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custNote"
+										placeholder="客户备注" />
+								</div>
+							</div>
+							
+							
+							
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary "
+									onclick="Bill.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+							</div>
+						</div>
+                        <div class="hidden-xs" id="BillTableToolbar" role="group">
+							
+							<button type="button" class="btn btn-primary " onclick="Bill.dump()" id="">
+									<i class="fa fa-search"></i>&nbsp;导出数据
+							</button>
+
+						</div>
+						<table id="BillTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	/**
+	 * 日志管理初始化
+	 */
+	var Bill = {
+		id : "BillTable", //表格id
+		seItem : null, //选中的条目
+		table : null,
+		layerIndex : -1
+	};
+
+	/**
+	 * 初始化表格的列
+	 'trans_id' => doOrderSn() . rand(10000, 99999),
+     'activity_id' => doOrderSn() . rand(100, 999),
+     'phone' => '153' . rand(10000000,92926291),
+     'code' => rand(1000, 9999),
+     'trade_time' => date('Y-m-d H:i:s', strtotime('2018-07-01 23:59:59') + rand(0, 86400*30)),
+     'start_time' => date('Y-m-d H:i:s', strtotime('2018-07-01 23:59:59') + rand(0, 86400*30)),
+     'send_status' => '发送成功',
+     'status' => rand(0, 1) ? '已使用' : '正常',
+	 */
+	Bill.initColumn = function() {
+		return [ {
+			field : 'selectItem',
+			checkbox : true
+		}, {
+			title : '流水号',
+			field : 'id',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '券号',
+			field : 'couponMain.code',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '所属机构',
+			field : 'couponMain.bill.goods.activity.organ.name',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '活动名称',
+			field : 'couponMain.bill.goods.activity.name',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		},{
+			title : '商品名称',
+			field : 'couponMain.bill.goods.name',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '客户名称',
+			field : 'couponMain.bill.goods.activity.custName',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		},{
+			title : '金额',
+			field : 'couponMain.bill.goods.money',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '核销时间',
+			field : 'createTime',
+			visible : true,
+			align : 'center',
+			valign : 'middle',
+		},{
+			title : '核销状态',
+			field : 'status',
+			visible : true,
+			align : 'center',
+			valign : 'middle',
+			formatter: 'Bill.statusFormatter'
+		}];
+	};
+
+	/**
+	 * 检查是否选中
+	 */
+	Bill.check = function() {
+		var selected = $('#' + this.id).bootstrapTable('getSelections');
+		if (selected.length == 0) {
+			Feng.info("请先选中表格中的某一记录！");
+			return false;
+		} else {
+			Bill.seItem = selected[0];
+			return true;
+		}
+	};
+	
+	// 格式化状态
+	Bill.statusFormatter = function(value, row, index) {
+		switch (value) {
+			case 1:
+				return '<span class="label label-success">已核销</span>';
+			break;
+		}
+	}
+
+	/**
+	 * 查询表单提交参数对象
+	 * @returns {{}}
+	 */
+	Bill.formParams = function() {
+		var queryData = {};
+		queryData['organId'] = $("#organId").val();
+		queryData['coupons'] = $("#coupons").val();
+		queryData['activityName'] = $("#activityName").val();
+		queryData['activityId'] = $("#activityId").val();
+		queryData['goodsName'] = $("#goodsName").val();
+		queryData['goodsId'] = $("#goodsId").val();
+		queryData['billId'] = $("#billId").val();
+		queryData['billNote'] = $("#billNote").val();
+		queryData['custName'] = $("#custName").val();
+		queryData['custNote'] = $("#custNote").val();
+		queryData['startTime'] = $("#startTime").val();
+		queryData['endTime'] = $("#endTime").val();
+		return queryData;
+	}
+
+	/**
+	 * 查询日志列表
+	 */
+	Bill.search = function() {
+	    if($("#startTime").val() == '' || $("#endTime").val() == ''){
+		    Feng.info("开始时间和结束时间不能为空");
+			return false;
+		}
+		Bill.table.refresh({
+			query : Bill.formParams()
+		});
+	};
+	
+	/**
+	 * 查询导出
+	 */
+	Bill.dump = function() {
+		Feng.confirm("是否确定导出数据?", function() {
+			var index = layer.msg('正在导出下载，请耐心等待...', {
+				time : 3600000,
+				icon : 16,
+				shade : 0.01
+			});
+			window.location.href = "/admin/Trade/dumpTransactionData?"
+					+ Feng.parseParam(Bill.formParams());
+			setTimeout(function() {
+				layer.close(index)
+			}, 1000);
+		});
+	};
+
+	$(function() {
+		var defaultColunms = Bill.initColumn();
+		var table = new BSTable(Bill.id, "/admin/Trade/transactionData",
+				defaultColunms);
+		table.setPaginationType("server");
+		table.setQueryParams(Bill.formParams());
+		Bill.table = table.init();
+	});
+</script>
+
+{/block}

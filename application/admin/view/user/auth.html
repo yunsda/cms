@@ -1,0 +1,67 @@
+{extend name='common/_container'} 
+{block name="content"}
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="CouponInfoForm">
+		<form class="layui-form" action=""  lay-filter="test1">
+			<input type="hidden" name="id" id="id" value="{$id}">
+			<div class="row">
+				<div class="col-sm-8">				
+					
+					<div>
+							<div class="col-sm-">
+                               {volist name="list" id="vo"}                                  					   
+									<div class="app" style="margin-bottom:5px;">
+                                        {if in_array($vo['value'],$myAccess)}									
+									    <input class="first" name="authorize" value="{$vo.value}" type="checkbox" title="{$vo.name}" lay-skin="primary" checked>
+										{else/}
+										<input class="first" name="authorize" value="{$vo.value}" type="checkbox" lay-skin="primary" title="{$vo.name}" >
+										{/if}
+										<div style="margin-bottom:15px; margin-top:5px;">
+										{volist name="vo[subdata]" id="vo"}
+										  {if in_array($vo['value'],$myAccess)}
+										   <input name="authorize" value="{$vo.value}" type="checkbox" lay-skin="primary" title="{$vo.name}" checked>
+										  {else/}
+										   <input style="margin-right:5px;" name="authorize" value="{$vo.value}" type="checkbox" lay-skin="primary" title="{$vo.name}">
+										  {/if}
+										{/volist}   
+										</div>    
+									</div>									                               
+							   {/volist}
+							</div>
+						</div>	
+				</div>
+                
+				
+			</div>
+			
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<button type="button" class="btn btn-info " onclick="UserInfoDlg.addAuth()" id="ensure">
+					    <i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="UserInfoDlg.close()" id="cancel">
+					    <i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
+				</div>
+			</div>
+			</form>
+		</div>
+
+	</div>
+</div>
+<script src="__PUBLIC__/static/js/admin/user/user_info.js"></script>
+<script src="__PUBLIC__/static/old/plugs/layui/layui.js?t=1498856285724" charset="utf-8"></script>
+<script>
+layui.config({dir: '__PUBLIC__/static/old/plugs/layui/'});
+layui.use(['layer', 'form'], function () {
+    window.layer = layui.layer;
+    window.form = layui.form();
+	
+});  
+
+</script> 
+
+
+
+{/block}

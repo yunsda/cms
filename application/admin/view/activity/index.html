@@ -1,0 +1,152 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+					
+						<div class="row">
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">下级机构
+										</button>
+									</div>
+									<select class="form-control" id="organId">
+									  <option value="">请选择下属机构</option>
+									  {volist name="list" id="vo"}
+										<option value="{$vo.id}">{$vo.cname}</option>
+									  {/volist}								
+									</select>
+								</div>
+							</div>
+							
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动编号
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityId"
+										placeholder="活动编号" />
+								</div>
+							</div>
+							
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">活动名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="activityName"
+										placeholder="活动名称" />
+								</div>
+							</div>
+													
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">
+											活动状态</button>
+									</div>
+									<select class="form-control" id="status">
+										<option value="">全部</option>
+										<option value="0">草稿</option>
+										<option value="1">待审核</option>
+										<option value="2">正常</option>
+										<option value="3">停售</option>
+										<option value="4">审核失败</option>
+										
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户名称
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custName"
+										placeholder="客户名称" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">客户备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="custNote"
+										placeholder="客户备注" />
+								</div>
+							</div>
+
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary "
+									onclick="OptLog.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+							</div>
+							
+						</div>
+						<div class="hidden-xs" id="OptLogTableToolbar" role="group">
+						    <button type="button" class="btn btn-primary "
+								onclick="OptLog.addActivity()" id="">
+								<i class="fa fa-plus"></i>&nbsp;创建活动
+							</button>
+							<button type="button" class="btn btn-primary "
+								onclick="OptLog.editActivity()" id="">
+								<i class="fa fa-plus"></i>&nbsp;编辑活动
+							</button>
+							<button type="button" class="btn btn-primary "
+								onclick="OptLog.laterActivity()" id="">
+								<i class="fa fa-plus"></i>&nbsp;活动延期
+							</button>
+						    <button type="button" class="btn btn-primary "
+								onclick="OptLog.add()" id="">
+								<i class="fa fa-plus"></i>&nbsp;创建商品
+							</button>
+							<button type="button" class="btn btn-primary "
+								onclick="OptLog.delay()" id="">
+								<i class="fa fa-plus"></i>&nbsp;卡券延期
+							</button>
+							<button type="button" class="btn btn-primary "
+								onclick="OptLog.detail()" id="">
+								<i class="fa fa-plus"></i>&nbsp;查看终端
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="OptLog.setStatus(3)" id="">
+							    <i class="fa fa-edit"></i>&nbsp;停用
+							</button>
+							<button type="button" class="btn btn-primary button-margin" onclick="OptLog.setStatus(2)" id="">
+							    <i class="fa fa-edit"></i>&nbsp;启用
+							</button>
+							
+						</div>
+						<table id="OptLogTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="__PUBLIC__/static/js/admin/activity/activity.js"></script>
+
+{/block}

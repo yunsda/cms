@@ -1,0 +1,70 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle"
+                                    src="__PUBLIC__/static/img/girl.gif"
+                               width="64px" height="64px"/></span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                       <span class="block m-t-xs"><strong class="font-bold">{:session('user.username')} </strong></span>
+                       
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="{:url('admin/login/out')}?id={:session('user.id')}">安全退出</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logo-element">金源信
+                </div>
+            </li>
+            
+            {volist name='menus' id='pmenu'}
+                {empty name='pmenu.sub'}
+                    <li>
+                        <a class="J_menuItem" href="{$pmenu.url}" name="tabMenuItem">
+                            <i class="{$pmenu.icon}"></i>
+                            <span class="nav-label">{$pmenu.title}</span>
+                        </a>
+                    </li>
+                {else}
+                    <li>
+                        <a href="#">
+                            <i class="fa {$pmenu.icon}"></i>
+                            <span class="nav-label">{$pmenu.title}</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            {volist name='pmenu.sub' id='menu'}
+                                {empty name='menu.sub'}
+                                    <li>
+                                        <a class="J_menuItem" href="{$menu.url}" name="tabMenuItem">
+                                        	<i class="{$menu.icon} nav-icon"></i>
+                                        	<span class="nav-label">{$menu.title}</span>
+                                        </a>
+                                    </li>
+                                {else}
+                                    <li>
+                                        <a href="#">{$menu.title} <span class="fa arrow"></span></a>
+                                        <ul class="nav nav-third-level">
+                                            {volist name='menu.sub' id='submenu'}
+                                            <li>
+                                                <a class="J_menuItem" href="{$submenu.url}" name="tabMenuItem">{$submenu.title}</a>
+                                            </li>
+                                            {/volist}
+                                        </ul>
+                                    </li>
+                                {/empty}
+                            {/volist}
+                        </ul>
+                    </li>
+				{/empty}
+            {/volist}
+
+        </ul>
+    </div>
+</nav>

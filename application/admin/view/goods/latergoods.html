@@ -1,0 +1,39 @@
+{extend name='common/_container'} 
+{block name="content"}
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="goodsInfoForm">
+			<input type="hidden" id="id" value="{$id}">
+			<input type="hidden" id="activityId" value="{$activityId}">
+			<div class="row">
+				<div class="col-sm-6"> 
+				     <div class='form-group'>
+                     <div class='form-group'>
+					<label class='col-sm-3 control-label'>商品延期至</label>
+                    <div class='col-sm-8'>					
+                     <input type="text" style="width:250px;" value="{$startTime}" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="laterTime">
+					</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<button type="button" class="btn btn-info " onclick="GoodsInfoDlg.laterSubmit()" id="ensure">
+					    <i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="GoodsInfoDlg.close()" id="cancel">
+					    <i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<script src="__PUBLIC__/static/js/admin/goods/goods_info.js"></script>
+
+{/block}

@@ -1,0 +1,50 @@
+{extend name='common/_container'} 
+{block name="content"}
+<div class="ibox float-e-margins">
+	<div class="ibox-content">
+		<div class="form-horizontal" id="CouponInfoForm">
+		<form class="layui-form" action="">
+		    <input type="hidden" name="activityId" id="activityId" value="{$activityId}">
+			<input type="hidden" name="goodsId" id="goodsId" value="{$goodsId}">
+			<input type="hidden" name="billId" id="billId" value="{$billId}">
+			<input type="hidden" name="coupons" id="coupons" value="{$coupons}">
+			<div class="row">
+				<div class="col-sm-6 b-r">				
+					<div class='form-group'>
+					<label class='col-sm-4 control-label'>卡券延期至</label>
+                    <div class='col-sm-8'>					
+                     <input type="text" value="" style="width:250px;" class="form-control layer-date"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"
+										id="datetime">
+					</div>
+					</div>
+				</div>
+                
+				
+			</div>
+			
+			<div class="row btn-group-m-t">
+				<div class="col-sm-10">
+					<button type="button" class="btn btn-info " onclick="CouponInfoDlg.delaySubmit()" id="ensure">
+					    <i class="fa fa-check"></i>&nbsp;提交
+					</button>
+					<button type="button" class="btn btn-danger " onclick="CouponInfoDlg.close()" id="cancel">
+					    <i class="fa fa-eraser"></i>&nbsp;取消
+					</button>
+				</div>
+			</div>
+			</form>
+		</div>
+
+	</div>
+</div>
+<script src="__PUBLIC__/static/js/admin/coupon/coupon_info.js"></script>
+<script src="__PUBLIC__/static/old/plugs/layui/layui.js?t=1498856285724" charset="utf-8"></script>
+<script>
+layui.config({dir: '__PUBLIC__/static/old/plugs/layui/'});
+layui.use(['layer', 'form'], function () {
+    window.layer = layui.layer;
+    window.form = layui.form();
+});
+</script> 
+{/block}

@@ -1,0 +1,389 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>制卡单据列表</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+						    
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">用户名
+										</button>
+									</div>
+									<input type="text" class="form-control" id="user" value="" placeholder="用户名" />
+								</div>
+							</div>
+							
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">真实姓名
+										</button>
+									</div>
+									<input type="text" class="form-control" id="name" value="" placeholder="真实姓名" />
+								</div>
+							</div>
+						    <div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="note" value="" placeholder="备注" />
+								</div>
+							</div>
+							<div class="col-sm-2">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">
+											状态</button>
+									</div>
+									<select class="form-control" id="status">
+										<option value="">全部</option>
+										<option value="1">正常</option>
+										<option value="0">禁用</option>
+									</select>
+								</div>
+							</div>
+							
+							
+							
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary "
+									onclick="User.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+							</div>
+						</div>
+
+
+						<div class="hidden-xs" id="UserTableToolbar" role="group">
+                            
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.addUser()" id="">
+								<i class="fa fa-plus"></i>&nbsp;添加账户
+							</button>
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.editUser()" id="">
+								<i class="fa fa-plus"></i>&nbsp;编辑账户
+							</button>
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.setPassword()" id="">
+								<i class="fa fa-plus"></i>&nbsp;重置密码
+							</button>
+
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.forbid()" id="">
+								<i class="fa fa-plus"></i>&nbsp;账户禁用
+							</button>
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.resume()" id="">
+								<i class="fa fa-plus"></i>&nbsp;账户启用
+							</button>
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="User.auth()" id="">
+								<i class="fa fa-plus"></i>&nbsp;账户授权
+							</button>
+						</div>
+						<table id="UserTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	/**
+	 * 日志管理初始化
+	 */
+	var User = {
+		id : "UserTable", //表格id
+		seItem : null, //选中的条目
+		table : null,
+		layerIndex : -1
+	};
+
+	/**
+	 * 初始化表格的列
+	 */
+	User.initColumn = function() {
+		return [ {
+			field : 'selectItem',
+			radio : true
+		}, {
+			title : '用户名',
+			field : 'user',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '真实姓名',
+			field : 'name',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}, {
+			title : '备注',
+			field : 'note',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		},{
+			title : '账户类别',
+			field : 'type',
+			visible : true,
+			align : 'center',
+			valign : 'middle',
+			formatter: 'User.tFormatter'
+		}, {
+			title : '状态',
+			field : 'status',
+			visible : true,
+			align : 'center',
+			valign : 'middle',
+			formatter: 'User.statusFormatter'
+		},{
+			title : '创建时间',
+			field : 'time',
+			visible : true,
+			align : 'center',
+			valign : 'middle'
+		}
+		];
+	};
+	
+	// 格式化状态
+	User.statusFormatter = function(value, row, index) {
+		switch (value) {
+		case '禁用':
+			return '<span class="label label-warning-light">' + value + '</span>';
+			break;
+		case '正常':
+			return '<span class="label label-primary">' + value + '</span>';
+			break;		
+		}
+	}
+	
+	// 格式化状态
+	User.tFormatter = function(value, row, index) {
+		switch (value) {
+		case '超级管理员':
+			return '<span class="label label-warning-light">' + value + '</span>';
+			break;
+		case '普通管理员':
+			return '<span class="label label-primary">' + value + '</span>';
+			break;		
+		}
+	}
+	
+	
+
+	/**
+	 * 检查是否选中
+	 */
+	User.check = function() {
+		var selected = $('#' + this.id).bootstrapTable('getSelections');
+		if (selected.length == 0) {
+			Feng.info("请先选中表格中的某一记录！");
+			return false;
+		} else {
+			User.seItem = selected[0];
+			return true;
+		}
+	};
+
+	
+	// 格式化类别
+	User.typeFormatter = function(value, row, index) {
+		switch (value) {
+		case '制卡单':
+			return '<span class="label label-info">' + value + '</span>';
+			break;
+		case '短信销售单':
+			return '<span class="label label-success">' + value + '</span>';
+			break;
+		}		
+	}
+	
+	// 格式化激活状态
+	User.modeFormatter = function(value, row, index) {
+		switch (value) {
+		case '自动激活':
+			return '<span class="label label-info">' + value + '</span>';
+			break;
+		case '手动激活':
+			return '<span class="label label-success">' + value + '</span>';
+			break;
+		}		
+	}
+	
+	
+	/**
+	账户禁用
+	**/
+	User.forbid = function() {
+		if (this.check()) {
+		    var type = this.seItem.type;
+		    if(type == '普通管理员'){
+		    var Userid = this.seItem.id;
+		    var operation = function() {			 
+				var ajax = new $ax(Feng.ctxPath + "/admin/User/forbid/UserId/" + Userid, function(data){
+					if (1 === parseInt(data.code)) {
+						Feng.success("操作成功！" );
+						User.table.refresh();
+					} else {
+						Feng.error("操作失败！" + data.msg + "！");
+					}
+				},function(data){
+					Feng.error("添加失败!" + data.responseJSON.message + "!");
+				});
+				//ajax.set(this.User);
+				ajax.start();
+			};
+			Feng.confirm("是否禁用该账户 ？", operation);
+			}else{
+			    Feng.error("超级管理员不允许操作");
+			}
+		}
+	};
+	
+	/**
+	账户启用
+	**/
+	User.resume = function() {
+		if (this.check()) {
+		    var Userid = this.seItem.id;
+		    var operation = function() {
+				var ajax = new $ax(Feng.ctxPath + "/admin/User/resume/UserId/" + Userid, function(data){
+					if (1 === parseInt(data.code)) {
+						Feng.success("操作成功！" );
+						User.table.refresh();
+					} else {
+						Feng.error("操作失败！" + data.msg + "！");
+					}
+				},function(data){
+					Feng.error("添加失败!" + data.responseJSON.message + "!");
+				});
+				//ajax.set(this.User);
+				ajax.start();
+			};
+			Feng.confirm("是否启用该账户 ？", operation);
+		}
+	};
+	
+/**
+ * 创建账户
+ */
+User.addUser = function () {
+	var index = layer.open({
+        type: 2,
+        title: '创建账户',
+        area: ['800px', '350px'], //瀹介珮
+        fix: false, //涓嶅浐瀹�
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/User/add'
+    });
+    this.layerIndex = index;
+};
+
+/**
+ * 编辑账户
+ */
+User.editUser = function () {
+  if (this.check()) {
+	var index = layer.open({
+        type: 2,
+        title: '编辑账户',
+        area: ['800px', '350px'], //瀹介珮
+        fix: false, //涓嶅浐瀹�
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/User/edit/?id=' +  this.seItem.id
+    });
+    this.layerIndex = index;
+  }
+};
+
+/**
+ * 账户授权
+ */
+User.auth = function () {
+  if (this.check()) {
+	var index = layer.open({
+        type: 2,
+        title: '账户授权',
+        area: ['80%', '80%'], //瀹介珮
+        fix: false, //涓嶅浐瀹�
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/User/auth/?id=' +  this.seItem.id
+    });
+    this.layerIndex = index;
+  }
+};
+
+/**
+ * 编辑密码
+ */
+User.setPassword = function () {
+  if (this.check()) {
+	var index = layer.open({
+        type: 2,
+        title: '重置密码',
+        area: ['800px', '350px'], //瀹介珮
+        fix: false, //涓嶅浐瀹�
+        maxmin: true,
+        content: Feng.ctxPath + '/admin/User/setPassword/?id=' +  this.seItem.id
+    });
+    this.layerIndex = index;
+  }
+};
+
+	/**
+	 * 查询表单提交参数对象
+	 * @returns {{}}
+	 */
+	User.formParams = function() {
+		var queryData = {};
+		queryData['user'] = $("#user").val();
+		queryData['name'] = $("#name").val();
+		queryData['note'] = $("#note").val();
+		queryData['status'] = $("#status").val();
+		return queryData;
+	}
+
+	/**
+	 * 查询日志列表
+	 */
+	User.search = function() {
+		User.table.refresh({
+			query : User.formParams()
+		});
+	};
+
+	$(function() {
+		var defaultColunms = User.initColumn();
+		var table = new BSTable(User.id, "/admin/User/listData",
+				defaultColunms);
+		table.setPaginationType("server");
+		table.setQueryParams(User.formParams());
+		User.table = table.init();
+	});
+</script>
+
+{/block}

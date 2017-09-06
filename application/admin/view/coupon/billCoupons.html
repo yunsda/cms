@@ -1,0 +1,274 @@
+{extend name='common/_container'} {block name="content"}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>电子券列表</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="row row-lg">
+					<div class="col-sm-12">
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">制卡单据号
+										</button>
+									</div>
+									<input type="text" id="billId" class="form-control" value="{$billId}" placeholder="制卡单据号" />
+								</div>
+							</div>
+							
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-btn">
+										<button data-toggle="dropdown"
+											class="btn btn-white dropdown-toggle" type="button">制卡单据备注
+										</button>
+									</div>
+									<input type="text" class="form-control" id="billNote" value="{$billRemark}" placeholder="制卡单据备注" />
+								</div>
+							</div>
+							
+							<div class="col-sm-3">
+								<button type="button" class="btn btn-primary " onclick="Coupon.search()" id="">
+									<i class="fa fa-search"></i>&nbsp;搜索
+								</button>
+								
+							</div>
+							
+						</div>
+
+
+						<div class="hidden-xs" id="CouponTableToolbar" role="group">
+
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="Coupon.invalid()" id="">
+								<i class="fa fa-plus"></i>&nbsp;作废
+							</button>
+
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="Coupon.freez(0)" id="">
+								<i class="fa fa-plus"></i>&nbsp;冻结
+							</button>
+							<button type="button" class="btn btn-primary button-margin"
+								onclick="Coupon.freez(1)" id="">
+								<i class="fa fa-plus"></i>&nbsp;解冻
+							</button>
+							<button type="button" class="btn btn-primary " onclick="Coupon.dump()" id="">
+									<i class="fa fa-search"></i>&nbsp;导出
+								</button>
+
+						</div>
+						<table id="CouponTable" data-mobile-responsive="true"
+							data-click-to-select="true">
+							<thead>
+								<tr>
+									<th data-field="selectItem" data-checkbox="true"></th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	/**
+	 * 日志管理初始化
+	 */
+	var Coupon = {
+		id : "CouponTable", //表格id
+		seItem : null, //选中的条目
+		table : null,
+		layerIndex : -1
+	};
+
+	/**
+	 * 初始化表格的列
+	 */
+	Coupon.initColumn = function() {
+		return [
+	        {field: 'selectItem', checkbox: true},			
+	        {title: '券号', field: 'code', align: 'center', valign: 'middle'},	        
+	        {title: '面额', field: 'money', align: 'center', valign: 'middle',formatter: 'Coupon.moneyFormatter'},
+	        {title: '制卡单名', field: 'bill.name', align: 'center', valign: 'middle'},
+	        {title: '券类型ID', field: 'coupon.name', align: 'center', valign: 'middle'},
+			{title: '商品名', field: 'bill.goods.name', visible: true, align: 'center', valign: 'middle'},			
+			{title: '活动名', field: 'bill.goods.activity.name', visible: true, align: 'center', valign: 'middle'},			
+	        {title: '开始时间', field: 'startTime', visible: true, align: 'center', valign: 'middle'},
+	        {title: '截止时间', field: 'endTime', visible: true, align: 'center', valign: 'middle'},
+			{title: '可使用次数', field: 'times', align: 'center', valign: 'middle', sortable: false},
+			{title: '已使用次数', field: 'usedTimes', align: 'center', valign: 'middle', sortable: false},
+			{title: '已使用金额', field: 'usedMoney', align: 'center', valign: 'middle', sortable: false},			
+			{title: '状态', field: 'status', align: 'center', valign: 'middle', sortable: false, formatter: 'Coupon.statusFormatter'}
+			];
+	};
+	
+	// 格式化状态
+	Coupon.moneyFormatter = function(value, row, index) {
+		return '<span class="label label-info">' + value + '</span>';
+	}
+
+	/**
+	 * 检查是否选中
+	 */
+	Coupon.check = function() {
+		var selected = $('#' + this.id).bootstrapTable('getSelections');
+		if (selected.length == 0) {
+			Feng.info("请先选中表格中的某些记录！");
+			return false;
+		} else {
+			Coupon.seItem = selected;
+			return true;
+		}
+	};
+	
+	// 格式化状态
+	Coupon.statusFormatter = function(value, row, index) {
+		switch (value) {
+		case '出库':
+			return '<span class="label label-info">' + value + '</span>';
+			break;
+		case '激活':
+			return '<span class="label label-success">' + value + '</span>';
+			break;
+		case '已使用':
+			return '<span class="label label-primary">' + value + '</span>';
+			break;
+		case '已冻结':
+			return '<span class="label label-warning">' + value + '</span>';
+			break;
+		case '已过期':
+			return '<span class="label label-warning-light">' + value + '</span>';
+			break;
+		case '已作废':
+			return '<span class="label label-danger">' + value + '</span>';
+			break;
+		default:
+			return '<span class="label label-primary">' + value + '</span>';
+			break;
+		}
+	}
+
+	/**
+	 * 作废券码
+	 */
+	Coupon.invalid = function() {
+		if (this.check()) {
+			var tip = '作废';
+			var operation = function() {
+				var couponIds = '';
+				$.each(Coupon.seItem, function() {
+					couponIds += ',' + this.code;
+				});
+				couponIds = couponIds.substr(1);
+				
+				var couponType = Coupon.seItem.activityId;
+				var ajax = new $ax(Feng.ctxPath + "/admin/coupon/invalid",
+						function(data) {
+							if (1 === parseInt(data.code)) {
+								Feng.success(tip + "成功！");
+								Coupon.table.refresh();
+							} else if ('C01' == data.code) {
+								Feng.error(data.msg + "！", 10000);
+							} else {
+								Feng.error(tip + "失败！" + data.msg + "！", 6000);
+								Coupon.table.refresh();
+							}
+						}, function(data) {
+							Feng.error("修改失败!" + data.responseJSON.message
+									+ "!");
+						});
+				ajax.set("couponIds", couponIds);
+				ajax.start();
+			};
+			Feng.confirm("是否" + tip + "该批券码 ？", operation);
+		}
+	};
+
+	/**
+	 * 作废券码
+	 */
+	Coupon.freez = function(freezFlag) {
+		if (this.check()) {
+			var tip = freezFlag ? '解冻' : '冻结';
+			var operation = function() {
+				var couponIds = '';
+				$.each(Coupon.seItem, function() {
+					couponIds += ',' + this.code;
+				});
+				couponIds = couponIds.substr(1);
+				var couponType = Coupon.seItem.activityId;
+				var ajax = new $ax(Feng.ctxPath + "/admin/coupon/freez",
+						function(data) {
+							if (1 === parseInt(data.code)) {
+								Feng.success(tip + "成功！");
+								Coupon.table.refresh();
+							} else if ('C01' == data.code) {
+								Feng.error(tip + "部分失败！<b>" + data.msg + "</b>！", 10000);
+								Coupon.table.refresh();
+							} else {
+								Feng.error(tip + "失败！" + data.msg + "！", 6000);
+							}
+						}, function(data) {
+							Feng.error("修改失败!" + data.responseJSON.message
+									+ "!");
+						});
+				ajax.set("couponIds", couponIds);
+				ajax.set("flag", freezFlag ? '1' : '0');
+				ajax.start();
+			};
+			Feng.confirm("是否" + tip + "该批券码 ？", operation);
+		}
+	};
+
+	/**
+	 * 查询表单提交参数对象
+	 * @returns {{}}
+	 */
+	Coupon.formParams = function() {
+		var queryData = {};
+		queryData['billId'] = $("#billId").val();
+		queryData['billNote'] = $("#billNote").val();
+		return queryData;
+	}
+
+	/**
+	 * 查询列表
+	 */
+	Coupon.search = function() {
+		Coupon.table.refresh({
+			query : Coupon.formParams()
+		});
+		
+	};
+	
+	/**
+	 * 查询导出
+	 */
+	Coupon.dump = function() {
+		Feng.confirm("是否确定导出选定条件券码记录?", function() {
+			var index = layer.msg('正在导出下载，请耐心等待...', {
+				time:3600000,
+				icon: 16,
+				shade: 0.01
+			});
+			window.location.href = "/admin/Coupon/dumpData?" + Feng.parseParam(Coupon.formParams());
+			setTimeout(function(){layer.close(index)}, 1000);
+		});
+	};
+
+	$(function() {
+		var defaultColunms = Coupon.initColumn();
+		var table = new BSTable(Coupon.id, "/admin/Coupon/listData?billId={$billId}",
+				defaultColunms);
+		table.setPaginationType("server");
+		table.setQueryParams(Coupon.formParams());
+		Coupon.table = table.init();
+	});
+</script>
+
+{/block}
